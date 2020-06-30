@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\AdminRolesController\CreateRequest;
 use App\Http\Requests\Backend\AdminRolesController\UpdateRequest;
@@ -16,11 +17,16 @@ use Illuminate\Support\Facades\Redirect;
 class AdminRolesController extends Controller
 {
 
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("roles");
+    }
+
     public function roles(Request $request)
     {
 
 
-        if($request->user()->can('admins.role.manager')) {
+        if ($request->user()->can('admins.role.manager')) {
             $roles = Role::all();
         } else {
             $roles = Role::where('group_id', $request->user()->group_id)->get();
@@ -32,7 +38,7 @@ class AdminRolesController extends Controller
         return view('backend.admins.roles')->with([
             'roles' => $roles,
             'permissions' => $permissions,
-            'editrole' => null
+            'editrole' => null,
         ]);
 
     }
@@ -42,7 +48,7 @@ class AdminRolesController extends Controller
 
         $permissionGroups = PermissionGroup::with('permissions')->get();
 
-        if($request->user()->can('admins.group.manager')) {
+        if ($request->user()->can('admins.group.manager')) {
 
             $groups = Group::all();
 
@@ -55,7 +61,7 @@ class AdminRolesController extends Controller
         return view('backend.admins.roles.edit')->with([
             'permissionGroups' => $permissionGroups,
             'role' => $role,
-            'groups' => $groups
+            'groups' => $groups,
         ]);
 
     }
@@ -65,7 +71,7 @@ class AdminRolesController extends Controller
 
         $permissionGroups = PermissionGroup::with('permissions')->get();
 
-        if($request->user()->can('admins.group.edit')) {
+        if ($request->user()->can('admins.group.edit')) {
 
             $groups = Group::all();
 
@@ -77,7 +83,7 @@ class AdminRolesController extends Controller
 
         return view('backend.admins.roles.create')->with([
             'permissionGroups' => $permissionGroups,
-            'groups' => $groups
+            'groups' => $groups,
         ]);
 
     }
@@ -86,10 +92,10 @@ class AdminRolesController extends Controller
     {
 
 
-            $role = Role::create([
-                'name' => $request->input('name'),
-                'group_id' => $request->input('group_id')
-            ]);
+        $role = Role::create([
+            'name' => $request->input('name'),
+            'group_id' => $request->input('group_id'),
+        ]);
 
 
         if ($request->has('permissions')) {
@@ -110,7 +116,7 @@ class AdminRolesController extends Controller
     {
 
         $role->update([
-            'name' => $request->input('name')
+            'name' => $request->input('name'),
         ]);
 
         $role->syncPermissions($request->input('permissions'));

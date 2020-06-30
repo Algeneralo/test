@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Scannel;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Scata\Ingredient;
@@ -16,6 +17,12 @@ class IngredientController extends Controller
     public $errors;
     public $message;
 
+    public function __construct()
+    {
+        if (request()->route('category'))
+            HelpDisk::checkIfExists("ingredients_" . request()->route('category'));
+    }
+
     public function ingredients($category = null, Request $request)
     {
 
@@ -27,7 +34,7 @@ class IngredientController extends Controller
         }
 
         return view('backend.scannel.ingredient.ingredients')->with([
-            'category' => $category
+            'category' => $category,
         ])->with('message', $message);
     }
 
@@ -46,7 +53,8 @@ class IngredientController extends Controller
 
     }
 
-    public function ingredientsSearchAjax($category = null, Request $request) {
+    public function ingredientsSearchAjax($category = null, Request $request)
+    {
 
         if ($category == null) {
 
@@ -60,9 +68,10 @@ class IngredientController extends Controller
 
     }
 
-    public function createAjax(Request $request) {
+    public function createAjax(Request $request)
+    {
 
-        if(!Ingredient::where('name', Str::slug($request->input('name')))->first()) {
+        if (!Ingredient::where('name', Str::slug($request->input('name')))->first()) {
 
             $ingredient = new Ingredient;
 
@@ -86,8 +95,7 @@ class IngredientController extends Controller
         if ($request->newsplit != '') {
 
             foreach ($request->newsplit as $_split) {
-                if($splitIngredient = Ingredient::where('name', 'like', '%"de":"' . $_split . '"%')->first())
-                {
+                if ($splitIngredient = Ingredient::where('name', 'like', '%"de":"' . $_split . '"%')->first()) {
                     foreach ($ingredient->products()->get() as $product) {
                         $product->addIngredient($splitIngredient);
                     }
@@ -117,13 +125,13 @@ class IngredientController extends Controller
             return view('backend.scannel.ingredient.ingredient')->with([
                 'ingredient' => $ingredient,
                 'ingredientGroups' => IngredientGroup::where('type', $ingredient->type)->get(),
-                'ingredients' => Ingredient::where('type', $ingredient->type)->get()
+                'ingredients' => Ingredient::where('type', $ingredient->type)->get(),
             ]);
         } else {
             $ingredient = new Ingredient;
             $ingredient->id = "new";
             return view('backend.scannel.ingredient.createingredient')->with([
-                'ingredient' => $ingredient
+                'ingredient' => $ingredient,
             ]);
         }
     }
@@ -137,12 +145,12 @@ class IngredientController extends Controller
         return view('backend.admins.groups')->with([
             'groups' => $groups,
             'users' => $users,
-            'editgroup' => null
+            'editgroup' => null,
         ]);
 
     }
 
-    public function delete($id,Request $request)
+    public function delete($id, Request $request)
     {
         if ($id) {
             $tmp = Ingredient::where('id', $id)->first();
@@ -150,10 +158,10 @@ class IngredientController extends Controller
             $message = "Zutat '" . $tmp->name['de'] . "' wurde gelöscht";
             $tmp->delete();
 
-            return Redirect::route('get.scannel.ingredients',$_type)
-            ->with('message', $message);
+            return Redirect::route('get.scannel.ingredients', $_type)
+                ->with('message', $message);
         }
-        return Redirect::route('get.scannel.ingredients','food');
+        return Redirect::route('get.scannel.ingredients', 'food');
     }
 
     public function save(Request $request)
@@ -207,7 +215,7 @@ class IngredientController extends Controller
          * Replace
          */
 
-        if($request->input('replacewith') != null) {    // this wird in allen Produkten ersetzt durch ein anderes ingredienz
+        if ($request->input('replacewith') != null) {    // this wird in allen Produkten ersetzt durch ein anderes ingredienz
 
             $replaceIngredient = Ingredient::find($request->input('replacewith'));
 
@@ -220,7 +228,7 @@ class IngredientController extends Controller
             $ingredient = $replaceIngredient;
         }
 
-        if($request->input('replacethis') != null) { // this ersetzt in allen Produkten anderes ingredienz
+        if ($request->input('replacethis') != null) { // this ersetzt in allen Produkten anderes ingredienz
 
             $replaceIngredient = Ingredient::find($request->input('replacethis'));
 

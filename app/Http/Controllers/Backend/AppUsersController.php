@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\AppUserController\CreateUserRequest;
 use App\Http\Requests\Backend\AppUserController\PasswortResetRequest;
@@ -20,37 +21,45 @@ use Illuminate\Support\Str;
 
 class AppUsersController extends Controller
 {
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("app_users");
+    }
 
-    public function users() {
+    public function users()
+    {
 
         $users = AppUser::with('profiles')->get();
 
         return view('backend.app-users.users')->with([
-            'users' => $users
+            'users' => $users,
         ]);
 
     }
 
-    public function user(AppUser $user) {
+    public function user(AppUser $user)
+    {
 
         return view('backend.app-users.edit')->with([
-            'user' => $user
+            'user' => $user,
         ]);
 
     }
 
-    public function getCreate() {
+    public function getCreate()
+    {
 
         return view('backend.app-users.create');
 
     }
 
-    public function updateUser(AppUser $user, UpdateRequest $request) {
+    public function updateUser(AppUser $user, UpdateRequest $request)
+    {
 
         // TODO: Send E-Mail if User was activated successfully
         // TODO: Send E-Mail if E-Mail Address has been changed
 
-        if($request->input('active')) {
+        if ($request->input('active')) {
 
             $emailVerified = now();
 
@@ -61,14 +70,15 @@ class AppUsersController extends Controller
         $user->update([
             'email_verified_at' => $emailVerified,
             'email' => $request->email,
-            'scannelid' => $request->scannelid
+            'scannelid' => $request->scannelid,
         ]);
 
         return Redirect::back();
 
     }
 
-    public function createUser(CreateUserRequest $request) {
+    public function createUser(CreateUserRequest $request)
+    {
 
         $newUser = new AppUser;
 
@@ -99,9 +109,10 @@ class AppUsersController extends Controller
 
     }
 
-    public function resetPassword(PasswortResetRequest $request) {
+    public function resetPassword(PasswortResetRequest $request)
+    {
 
-        if(Cache::has('resetpasswordapp:' . $request->appuserid) && Cache::get('resetpasswordapp:' . $request->appuserid) == $request->token) {
+        if (Cache::has('resetpasswordapp:' . $request->appuserid) && Cache::get('resetpasswordapp:' . $request->appuserid) == $request->token) {
 
             $appuser = AppUser::find($request->appuserid);
 
@@ -119,15 +130,18 @@ class AppUsersController extends Controller
 
     }
 
-    public function createProfile() {
+    public function createProfile()
+    {
 
     }
 
-    public function updateProfile() {
+    public function updateProfile()
+    {
 
     }
 
-    public function softDelete(AppUser $user, Request $request) {
+    public function softDelete(AppUser $user, Request $request)
+    {
 
         $user->profiles()->forceDelete();
         $user->forceDelete();

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Scata;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Jobs\OCR\StartOCR;
 use App\Models\Scata\Ingredient;
@@ -18,6 +19,12 @@ use Intervention\Image\Facades\Image;
 
 class ProductController extends Controller
 {
+
+    public function __construct()
+    {
+        if (request()->route('category'))
+            HelpDisk::checkIfExists("scata_products" . request()->route('category'));
+    }
 
     public function products($category = null, Request $request)
     {
@@ -49,7 +56,7 @@ class ProductController extends Controller
         }
 
         return view('backend.scata.products.products')->with([
-            'products' => $products
+            'products' => $products,
         ]);
 
     }
@@ -62,7 +69,7 @@ class ProductController extends Controller
         return view('backend.scata.products.product')->with([
             'product' => $product,
             'producers' => Producer::all(),
-            'qualityseals' => QualitySeal::all()
+            'qualityseals' => QualitySeal::all(),
         ]);
 
     }
@@ -75,7 +82,7 @@ class ProductController extends Controller
         StartOCR::dispatch($image);
 
         return response()->json([
-            'status' => 'started'
+            'status' => 'started',
         ]);
 
     }
@@ -85,21 +92,21 @@ class ProductController extends Controller
 
         $product->update([
             'product_name' => $request->input('productname'),
-            'regulated_name' => $request->input('regulated_name')
+            'regulated_name' => $request->input('regulated_name'),
         ]);
 
         $ingredients = explode(',', $request->input('ingredients'));
 
-        $dbIngredients = array();
+        $dbIngredients = [];
 
         foreach ($ingredients as $ingredient) {
 
             $dbIngredient = Ingredient::firstOrCreate([
-                'slug' => Str::slug($ingredient)
+                'slug' => Str::slug($ingredient),
             ]);
 
             $dbIngredient->name = [
-                'de' => $ingredient
+                'de' => $ingredient,
             ];
             $dbIngredient->type = $product->type;
             $dbIngredient->save();
@@ -144,11 +151,11 @@ class ProductController extends Controller
                 $nutrientGroup->nutrients()->updateOrCreate([
 
                     'group_id' => $nutrientGroup->group_id,
-                    'nutrient' => $nutrient
+                    'nutrient' => $nutrient,
                 ], [
                     'precision' => $data['precision'],
                     'val' => $data['value'],
-                    'unit' => $data['unit']
+                    'unit' => $data['unit'],
                 ]);
 
             }
@@ -186,7 +193,7 @@ class ProductController extends Controller
         $productImage->save();
 
         return response()->json([
-            'return' => true
+            'return' => true,
         ]);
 
     }

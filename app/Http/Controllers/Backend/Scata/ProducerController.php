@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Scata;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Models\Scata\Producer;
 use Illuminate\Http\Request;
@@ -10,13 +11,18 @@ use Illuminate\Support\Facades\Redirect;
 class ProducerController extends Controller
 {
 
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("producers");
+    }
+
     public function producers(Request $request)
     {
 
         $producer = Producer::all();
 
         return view('backend.scata.producers.producers')->with([
-            'producers' => $producer
+            'producers' => $producer,
         ]);
 
     }
@@ -25,7 +31,7 @@ class ProducerController extends Controller
     {
 
         return view('backend.scata.producers.producer')->with([
-            'producer' => $producer
+            'producer' => $producer,
         ]);
 
     }
@@ -42,7 +48,7 @@ class ProducerController extends Controller
             'phone' => $request->phone,
             'fax' => $request->fax,
             'email' => $request->email,
-            'website' => $request->website
+            'website' => $request->website,
         ]);
 
         return Redirect::back();

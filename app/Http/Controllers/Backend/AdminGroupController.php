@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\AdminGroupController\CreateRequest;
 use App\Http\Requests\Backend\AdminGroupController\UpdateRequest;
@@ -15,8 +16,13 @@ use Intervention\Image\Facades\Image;
 
 class AdminGroupController extends Controller
 {
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("groups");
+    }
 
-    public function groups() {
+    public function groups()
+    {
 
         $groups = Group::with('supervisor')->get();
         $users = Admin::all();
@@ -24,38 +30,41 @@ class AdminGroupController extends Controller
         return view('backend.admins.groups')->with([
             'groups' => $groups,
             'users' => $users,
-            'editgroup' => null
+            'editgroup' => null,
         ]);
 
     }
 
-    public function group(Group $group) {
+    public function group(Group $group)
+    {
 
         $users = Admin::all();
 
         return view('backend.admins.groups.edit')->with([
             'users' => $users,
-            'group' => $group
+            'group' => $group,
         ]);
 
 
     }
 
-    public function getCreate() {
+    public function getCreate()
+    {
 
         $users = Admin::all();
 
         return view('backend.admins.groups.create')->with([
-            'users' => $users
+            'users' => $users,
         ]);
 
     }
 
-    public function create(CreateRequest $request) {
+    public function create(CreateRequest $request)
+    {
 
         $group = Group::create($request->except('logo'));
 
-        if($request->hasFile('logo')) {
+        if ($request->hasFile('logo')) {
 
             $file = $request->file('logo');
             $filename = Str::slug($group->name) . '_' . time() . '.' . $file->extension();
@@ -70,13 +79,14 @@ class AdminGroupController extends Controller
 
     }
 
-    public function update(Group $group, UpdateRequest $request) {
+    public function update(Group $group, UpdateRequest $request)
+    {
 
         $group->update($request->except('logo'));
 
-        if($request->hasFile('logo')) {
+        if ($request->hasFile('logo')) {
 
-            if($group->logo) {
+            if ($group->logo) {
 
                 Storage::delete('group-logos/' . $group->logo);
 
@@ -96,7 +106,8 @@ class AdminGroupController extends Controller
 
     }
 
-    public function getLogo(Group $group) {
+    public function getLogo(Group $group)
+    {
 
         if ($group->logo) {
 

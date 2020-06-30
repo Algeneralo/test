@@ -1,6 +1,5 @@
 <?php
 
-
 Route::prefix('auth')->group(function () {
 
     Route::get('login', function () {
@@ -143,7 +142,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('quality/{quality}', 'Scata\QualityController@quality')->name('get.scata.quality');
         Route::post('quality/{qualitySeal}', 'Scata\QualityController@update')->name('post.scata.quality-update');
 
-        Route::get('clean-products', function() {
+        Route::get('clean-products', function () {
 
             $products = \App\Models\Scata\Products\Product::all();
 
@@ -152,7 +151,6 @@ Route::middleware('auth:admin')->group(function () {
                 if ($product->status == 'inactive' || $product->status == 'creating') {
 
                     echo $product->name;
-
 
 
                     $product->eans()->delete();
@@ -203,33 +201,42 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('ajaxRequest', 'AjaxController@ajaxRequestPost')->name('ajaxRequest.post');
 
 
-        Route::get('openproducts/{category?}'   , 'ProductController@openproducts') ->name('get.scannel.openproducts')->middleware('can:open-products.read');
-        Route::get('openproduct/{product?}'     , 'ProductController@openproduct')  ->name('get.scannel.openproduct')->middleware('can:open-products.read');
+        Route::get('openproducts/{category?}', 'ProductController@openproducts')->name('get.scannel.openproducts')->middleware('can:open-products.read');
+        Route::get('openproduct/{product?}', 'ProductController@openproduct')->name('get.scannel.openproduct')->middleware('can:open-products.read');
 
 
-        Route::get('products/{category?}'   , 'ProductController@products') ->name('get.scannel.products')->middleware('can:scannel-products.read');
-        Route::get('product/{product?}'     , 'ProductController@product')  ->name('get.scannel.product')->middleware('can:scannel-products.read');
-        Route::post('product/{product?}'    , 'ProductController@save')   ->name('post.saveproduct')->middleware('can:scannel-products.edit');
-        Route::get('products/{delete?}'     , 'ProductController@delete')  ->name('get.scannelproductdelete')->middleware('can:scannel-products.delete');
+        Route::get('products/{category?}', 'ProductController@products')->name('get.scannel.products')->middleware('can:scannel-products.read');
+        Route::get('product/{product?}', 'ProductController@product')->name('get.scannel.product')->middleware('can:scannel-products.read');
+        Route::post('product/{product?}', 'ProductController@save')->name('post.saveproduct')->middleware('can:scannel-products.edit');
+        Route::get('products/{delete?}', 'ProductController@delete')->name('get.scannelproductdelete')->middleware('can:scannel-products.delete');
 
-        Route::get('bot/products/{category?}'   , 'BotProductController@products') ->name('get.scannel.bot.products')->middleware('can:bot-products.read');
-        Route::get('bot/product/{category?}'   , 'BotProductController@product') ->name('get.scannel.bot.product')->middleware('can:bot-products.read');
-        Route::post('bot/product/{product?}'    , 'BotProductController@save')   ->name('post.savebotproduct')->middleware('can:bot-products.edit');
+        Route::get('bot/products/{category?}', 'BotProductController@products')->name('get.scannel.bot.products')->middleware('can:bot-products.read');
+        Route::get('bot/product/{category?}', 'BotProductController@product')->name('get.scannel.bot.product')->middleware('can:bot-products.read');
+        Route::post('bot/product/{product?}', 'BotProductController@save')->name('post.savebotproduct')->middleware('can:bot-products.edit');
 
-        Route::get('ingredient/ingredients/{category?}'   , 'IngredientController@ingredients') ->name('get.scannel.ingredients')->middleware('can:ingredients.read');
-        Route::get('ingredient/ingredients/ajax/{category?}'   , 'IngredientController@ingredientsAjax') ->name('get.scannel.ingredients-ajax')->middleware('can:ingredients.read');
-        Route::get('ingredient/ingredients/ajax/search/{category?}'   , 'IngredientController@ingredientsSearchAjax') ->name('get.scannel.ingredients-search-ajax')->middleware('can:ingredients.read');
-        Route::post('ingredient/ingredients/ajax/create'   , 'IngredientController@createAjax') ->name('get.scannel.ingredients-create-ajax')->middleware('can:ingredients.edit');
-        Route::get('ingredient/ingredient/{category?}'   , 'IngredientController@ingredient') ->name('get.scannel.ingredient')->middleware('can:ingredients.read');
-        Route::post('ingredient/ingredient/{ingredient?}'    , 'IngredientController@save')   ->name('post.saveingredient')->middleware('can:ingredients.edit');
-        Route::get('ingredient/ingredients/delete/{delete?}'     , 'IngredientController@delete')  ->name('get.scannelingredientdelete')->middleware('can:ingredients.delete');
+        Route::get('ingredient/ingredients/{category?}', 'IngredientController@ingredients')->name('get.scannel.ingredients')->middleware('can:ingredients.read');
+        Route::get('ingredient/ingredients/ajax/{category?}', 'IngredientController@ingredientsAjax')->name('get.scannel.ingredients-ajax')->middleware('can:ingredients.read');
+        Route::get('ingredient/ingredients/ajax/search/{category?}', 'IngredientController@ingredientsSearchAjax')->name('get.scannel.ingredients-search-ajax')->middleware('can:ingredients.read');
+        Route::post('ingredient/ingredients/ajax/create', 'IngredientController@createAjax')->name('get.scannel.ingredients-create-ajax')->middleware('can:ingredients.edit');
+        Route::get('ingredient/ingredient/{category?}', 'IngredientController@ingredient')->name('get.scannel.ingredient')->middleware('can:ingredients.read');
+        Route::post('ingredient/ingredient/{ingredient?}', 'IngredientController@save')->name('post.saveingredient')->middleware('can:ingredients.edit');
+        Route::get('ingredient/ingredients/delete/{delete?}', 'IngredientController@delete')->name('get.scannelingredientdelete')->middleware('can:ingredients.delete');
 
-        Route::get('ingredient/split/{ingredient?}'     , 'IngredientController@split')  ->name('get.scannel.split')->middleware('can:ingredients.edit');
-        Route::post('ingredient/split/{ingredient?}'     , 'IngredientController@split')  ->name('post.scannel.split')->middleware('can:ingredients.edit');
+        Route::get('ingredient/split/{ingredient?}', 'IngredientController@split')->name('get.scannel.split')->middleware('can:ingredients.edit');
+        Route::post('ingredient/split/{ingredient?}', 'IngredientController@split')->name('post.scannel.split')->middleware('can:ingredients.edit');
 
-        Route::get('ingredient/ingredientgroups/{category?}'   , 'IngredientGroupsController@ingredientgroups') ->name('get.scannel.ingredientgroups')->middleware('can:ingredients.read');
-        Route::get('ingredient/ingredientgroup/{category?}'   , 'IngredientGroupsController@ingredientgroup') ->name('get.scannel.ingredientgroup')->middleware('can:ingredients.read');
-        Route::post('ingredient/ingredientgroup/{ingredient?}'    , 'IngredientGroupsController@save')   ->name('post.saveingredientgroup')->middleware('can:ingredients.edit');
+        Route::get('ingredient/ingredientgroups/{category?}', 'IngredientGroupsController@ingredientgroups')->name('get.scannel.ingredientgroups')->middleware('can:ingredients.read');
+        Route::get('ingredient/ingredientgroup/{category?}', 'IngredientGroupsController@ingredientgroup')->name('get.scannel.ingredientgroup')->middleware('can:ingredients.read');
+        Route::post('ingredient/ingredientgroup/{ingredient?}', 'IngredientGroupsController@save')->name('post.saveingredientgroup')->middleware('can:ingredients.edit');
+    });
+
+    Route::prefix('helpdisk')->group(function () {
+        Route::get("/", "HelpDiskController@index")->name("helpDisk.index")->middleware("can:helpDisk.read");
+        Route::get("/create", "HelpDiskController@create")->name("helpDisk.create")->middleware("can:helpDisk.create");
+        Route::post("/", "HelpDiskController@store")->name("helpDisk.store")->middleware("can:helpDisk.create");
+        Route::get("/{helpDisk}", "HelpDiskController@edit")->name("helpDisk.edit")->middleware("can:helpDisk.edit");
+        Route::put("/{helpDisk}/update", "HelpDiskController@update")->name("helpDisk.update")->middleware("can:helpDisk.edit");
+        Route::get("/{helpDisk}/delete", "HelpDiskController@destroy")->name("helpDisk.destroy")->middleware("can:helpDisk.delete");
     });
 });
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Scata;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Models\Scata\QualitySeal;
 use Illuminate\Http\Request;
@@ -13,30 +14,37 @@ use Intervention\Image\Facades\Image;
 
 class QualityController extends Controller
 {
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("qualities");
+    }
 
-    public function qualities(Request $request) {
+    public function qualities(Request $request)
+    {
 
         $qualities = QualitySeal::all();
 
         return view('backend.scata.quality.qualities')->with([
-            'qualities' => $qualities
+            'qualities' => $qualities,
         ]);
 
     }
 
-    public function quality(QualitySeal $quality, Request $request) {
+    public function quality(QualitySeal $quality, Request $request)
+    {
 
         return view('backend.scata.quality.quality')->with([
-            'quality' => $quality
+            'quality' => $quality,
         ]);
 
     }
 
-    public function update(QualitySeal $qualitySeal, Request $request) {
+    public function update(QualitySeal $qualitySeal, Request $request)
+    {
 
         $filename = $qualitySeal->logo;
 
-        if($request->hasFile('file')) {
+        if ($request->hasFile('file')) {
 
             Storage::disk('qualityseals')->delete($qualitySeal->logo);
 
@@ -53,27 +61,29 @@ class QualityController extends Controller
         $qualitySeal->update([
             'name' => $request->name,
             'logo' => $filename,
-            'description' => $request->description
+            'description' => $request->description,
         ]);
 
         return Redirect::back();
 
     }
 
-    public function getCreate(Request $request) {
+    public function getCreate(Request $request)
+    {
 
         return view('backend.scata.quality.create');
 
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
 
         $qualitySeal = new QualitySeal();
 
         $qualitySeal->name = $request->name;
         $qualitySeal->description = $request->description;
 
-        if($request->hasFile('file')) {
+        if ($request->hasFile('file')) {
 
             $filename = Str::slug($request->name) . '-' . now()->format('YmdHis') . '.png';
 

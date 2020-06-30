@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\AdminController\CreateRequest;
 use App\Http\Requests\Backend\AdminController\UpdateRequest;
@@ -17,10 +18,15 @@ use Spatie\Permission\Models\Role;
 
 class AdminController extends Controller
 {
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("users");
+    }
 
-    public function users(Request $request) {
+    public function users(Request $request)
+    {
 
-        if($request->user()->can('admins.user.manager')) {
+        if ($request->user()->can('admins.user.manager')) {
             $users = Admin::with('group')->get();
         } else {
             $users = Admin::where('group_id', $request->user()->group_id)->with('group')->get();
@@ -32,16 +38,17 @@ class AdminController extends Controller
 
     }
 
-    public function user(Admin $admin, Request $request) {
+    public function user(Admin $admin, Request $request)
+    {
 
 
-        if($request->user()->can('admins.role.manager')) {
+        if ($request->user()->can('admins.role.manager')) {
             $roles = Role::all();
         } else {
             $roles = Role::where('group_id', $request->user()->group_id)->get();
         }
 
-        if($request->user()->can('admins.group.manager')) {
+        if ($request->user()->can('admins.group.manager')) {
             $groups = Group::all();
         } else {
             $groups = Group::where('group_id', $request->user()->group_id)->get();
@@ -50,20 +57,21 @@ class AdminController extends Controller
         return view('backend.admins.users.edit')->with([
             'roles' => $roles,
             'groups' => $groups,
-            'user' => $admin
+            'user' => $admin,
         ]);
 
     }
 
-    public function getCreate(Request $request) {
+    public function getCreate(Request $request)
+    {
 
-        if($request->user()->can('admins.role.manager')) {
+        if ($request->user()->can('admins.role.manager')) {
             $roles = Role::all();
         } else {
             $roles = Role::where('group_id', $request->user()->group_id)->get();
         }
 
-        if($request->user()->can('admins.group.manager')) {
+        if ($request->user()->can('admins.group.manager')) {
             $groups = Group::all();
         } else {
             $groups = Group::where('group_id', $request->user()->group_id)->get();
@@ -74,7 +82,8 @@ class AdminController extends Controller
         ]);
     }
 
-    public function create(CreateRequest $request) {
+    public function create(CreateRequest $request)
+    {
 
         $admin = Admin::create($request->except(['password_confirmation', 'role', 'send-credentials']));
 
@@ -100,7 +109,8 @@ class AdminController extends Controller
 
     }
 
-    public function update(Admin $admin, UpdateRequest $request) {
+    public function update(Admin $admin, UpdateRequest $request)
+    {
 
         if ($request->has('password') && ($request->input('password') != null)) {
 
@@ -120,7 +130,8 @@ class AdminController extends Controller
 
     }
 
-    public function softDelete(Admin $admin, Request $request) {
+    public function softDelete(Admin $admin, Request $request)
+    {
 
         $admin->forceDelete();
 

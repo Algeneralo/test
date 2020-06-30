@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Models\HelpDisk;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\NewsletterController\CreateRequest;
 use App\Http\Requests\Backend\NewsletterController\UpdateRequest;
@@ -12,43 +13,51 @@ use Illuminate\Support\Facades\Redirect;
 
 class NewsletterController extends Controller
 {
+    public function __construct()
+    {
+        HelpDisk::checkIfExists("newsletter");
+    }
 
-    public function newsletters() {
+    public function newsletters()
+    {
 
         $newsletters = Newsletter::all();
 
         return view('backend.newsletter.newsletters')->with([
-            'newsletters' => $newsletters
+            'newsletters' => $newsletters,
         ]);
 
     }
 
-    public function newsletter(Newsletter $newsletter) {
+    public function newsletter(Newsletter $newsletter)
+    {
 
         $groups = Group::all();
 
         return view('backend.newsletter.edit')->with([
             'groups' => $groups,
-            'newsletter' => $newsletter
+            'newsletter' => $newsletter,
         ]);
 
     }
 
-    public function getCreate() {
+    public function getCreate()
+    {
 
         $groups = Group::all();
 
         return view('backend.newsletter.create')->with([
-           'groups' => $groups
+            'groups' => $groups,
         ]);
 
     }
 
-    public function create(CreateRequest $request) {
+    public function create(CreateRequest $request)
+    {
 
         $newsletter = $request->user()->newsletters()->create($request->except(['send_now']));
 
-        if($request->input('send_now')) {
+        if ($request->input('send_now')) {
 
             $newsletter->send();
 
@@ -58,11 +67,12 @@ class NewsletterController extends Controller
 
     }
 
-    public function update(Newsletter $newsletter, UpdateRequest $request) {
+    public function update(Newsletter $newsletter, UpdateRequest $request)
+    {
 
         $newsletter->update($request->except(['send_now']));
 
-        if($request->input('send_now')) {
+        if ($request->input('send_now')) {
 
             $newsletter->send();
 
@@ -72,7 +82,8 @@ class NewsletterController extends Controller
 
     }
 
-    public function send(Newsletter $newsletter) {
+    public function send(Newsletter $newsletter)
+    {
 
         $newsletter->send();
 
@@ -80,7 +91,8 @@ class NewsletterController extends Controller
 
     }
 
-    public function delete(Newsletter $newsletter) {
+    public function delete(Newsletter $newsletter)
+    {
 
         $newsletter->forceDelete();
 
