@@ -20,6 +20,8 @@ class AdminController extends Controller
 {
     public function __construct()
     {
+        $this->middleware("concurrent.operations:App\Models\Admins\Admin")->only("user", "update");
+
         HelpDisk::checkIfExists("users");
     }
 
@@ -40,7 +42,6 @@ class AdminController extends Controller
 
     public function user(Admin $admin, Request $request)
     {
-
 
         if ($request->user()->can('admins.role.manager')) {
             $roles = Role::all();

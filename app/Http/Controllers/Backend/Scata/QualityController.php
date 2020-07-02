@@ -16,6 +16,7 @@ class QualityController extends Controller
 {
     public function __construct()
     {
+        $this->middleware("concurrent.operations:App\Models\Scata\QualitySeal")->only("update", "quality");
         HelpDisk::checkIfExists("qualities");
     }
 

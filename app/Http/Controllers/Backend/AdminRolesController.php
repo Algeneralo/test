@@ -19,6 +19,8 @@ class AdminRolesController extends Controller
 
     public function __construct()
     {
+        $this->middleware("concurrent.operations:App\Models\Admins\Role")->only("role", "update");
+
         HelpDisk::checkIfExists("roles");
     }
 

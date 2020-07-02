@@ -22,8 +22,12 @@ class ProductController extends Controller
 
     public function __construct()
     {
-        if (request()->route('category'))
-            HelpDisk::checkIfExists("scata_products" . request()->route('category'));
+        $this->middleware("concurrent.operations:App\Models\Scata\Products\Product")->only("update", "producer");
+
+        if (request()->route('category') || request()->route('product')) {
+            $category = request()->route('product') ? optional(Product::where('product_id', request()->route('product'))->first())->type : request()->route('category');
+            HelpDisk::checkIfExists("scata_products_" . $category);
+        }
     }
 
     public function products($category = null, Request $request)
@@ -44,7 +48,6 @@ class ProductController extends Controller
         } else {
 
             if ($request->user()->can('products_all')) {
-
                 $products = Product::orderby('product_id', 'DESC')->where('status', '!=', 'active')->where('type', $category)->get();
 
             } else {

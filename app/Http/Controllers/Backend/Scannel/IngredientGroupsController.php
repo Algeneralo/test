@@ -16,8 +16,12 @@ class IngredientGroupsController extends Controller
 
     public function __construct()
     {
-        if (request()->route('category'))
-        HelpDisk::checkIfExists( "ingredientgroups_" . request()->route('category'));
+        $this->middleware("concurrent.operations:App\Models\Scata\IngredientGroup")->only("ingredientgroup", "save");
+
+        if (request()->route('category')) {
+            $category = is_numeric(request()->route('category')) ? IngredientGroup::where('id', request()->route('category'))->firstOrFail()->type : request()->route('category');
+            HelpDisk::checkIfExists("ingredientgroups_" . $category);
+        }
 
     }
 

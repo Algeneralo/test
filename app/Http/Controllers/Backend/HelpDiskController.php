@@ -11,6 +11,12 @@ use App\Http\Requests\Backend\HelpDiskController\UpdateRequest;
 
 class HelpDiskController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware("concurrent.operations:App\Models\HelpDisk")->only("edit", "update");
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -55,6 +61,13 @@ class HelpDiskController extends Controller
     {
         $pages = Page::query()->doesntHave("helpDisk")->get();
         return view("backend.helpdisk.edit", compact("helpDisk", "pages"));
+    }
+
+    public function clone(HelpDisk $helpDisk)
+    {
+        $pages = Page::query()->doesntHave("helpDisk")->get();
+        $details = $helpDisk->details;
+        return view("backend.helpdisk.create", compact("pages", "details"));
     }
 
     /**

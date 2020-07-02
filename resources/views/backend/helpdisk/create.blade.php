@@ -1,7 +1,9 @@
 @extends('backend.layouts.backend')
-
-@section('title', 'Helpdesk hinzufügen')
-
+@isset($detials)
+    @section('title', 'Helpdesk klonen')
+@else
+    @section('title', 'Helpdesk hinzufügen')
+@endif
 @section('css_before')
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.css" rel="stylesheet">
@@ -10,7 +12,11 @@
 @section('content')
     <h2 class="content-heading">
         <i class="fa fa-question-circle"></i>
-        Helpdesk hinzufügen
+        @isset($detials)
+            Helpdesk klonen
+        @else
+            Helpdesk hinzufügen
+        @endif
     </h2>
 
     <form class="block block-form" method="post" action="{{route('helpDisk.store')}}">
@@ -60,6 +66,9 @@
             $('#summernote').summernote({
                 lang: 'de-DE',
             });
+            @isset($details)
+             $("#summernote").summernote('code', "{!! $details !!}");
+            @endif
         });
     </script>
 @endsection

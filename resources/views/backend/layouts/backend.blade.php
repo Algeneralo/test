@@ -24,6 +24,17 @@
             background-color: white;
         }
 
+        .block.block-form .block-footer a, .block.block-form .block-footer button {
+            float: left;
+            margin-right: 4px;
+        }
+
+        .block.block-form .block-footer:after {
+            display: block;
+            clear: both;
+            content: "";
+        }
+
         .sidebar {
             height: 100%;
             width: 0;
@@ -673,7 +684,7 @@
                             -->
 
                             <a class="dropdown-item" href="{{route('get.logout')}}">
-                                <i class="si si-logout mr-5"></i> Sign Out
+                                <i class="si si-logout mr-5"></i> Abmelden
                             </a>
                         </div>
                     </div>
@@ -874,7 +885,19 @@
             document.getElementById("mySidebar").style.width = "0";
             document.getElementById("main-container").style.marginRight = "0";
         }
+
+
+        @if(session()->has("error"))
+            let div = '    <div class="alert alert-danger alert-dismissable" role="alert">' +
+                '        <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '            <span aria-hidden="true">×</span>' +
+                '        </button>' +
+                '        <p class="mb-0">{{session("error")}}</p>' +
+                '    </div>'
+            $(".content-heading").after(div)
+        @endif
     </script>
     @yield('js_after')
+
 </body>
 </html>

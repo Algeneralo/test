@@ -1,6 +1,6 @@
 @extends('backend.layouts.backend')
 
-@section('title', 'Mitarbeiter bearbeiten')
+@section('title', 'Helpdesk bearbeiten')
 
 @section('css_before')
     <link rel="stylesheet" href="{{ asset('js/plugins/select2/css/select2.min.css') }}">

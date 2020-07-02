@@ -27,7 +27,7 @@
 
 
     <h2 class="content-heading">
-        <i class="scannel-icons icon-product"></i>  Scannel Ingredienz-Gruppe: {{@$ingredientgroup->currentName}}
+        <i class="scannel-icons icon-product"></i>  Scannel Ingredienz-Gruppe: {{$ingredientgroup->currentName["de"]??''}}
     </h2>
     <form class="row" action="{{route('post.saveingredientgroup')}}" method="post" enctype="multipart/form-data">
     @csrf

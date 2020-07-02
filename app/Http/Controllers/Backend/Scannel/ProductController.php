@@ -22,9 +22,12 @@ class ProductController extends Controller
 
     public function __construct()
     {
-        if (request()->route('category')) {
-            $prefix = \request()->is("scannel/products/*") ? "products_" : "openproducts_";
-            HelpDisk::checkIfExists($prefix . request()->route('category'));
+        $this->middleware("concurrent.operations:App\Models\Scata\Products\Product")->only("product", "openproduct", "save");
+
+        if (request()->route('category') || request()->route('product')) {
+            $prefix = \request()->is("scannel/product*") ? "products_" : "openproducts_";
+            $category = request()->route('product') ? optional(Product::where('product_id', request()->route('product'))->first())->type : request()->route('category');
+            HelpDisk::checkIfExists($prefix . $category);
         }
     }
 
@@ -166,7 +169,6 @@ class ProductController extends Controller
 
     public function openproduct($productid = null, Request $request)
     {
-
         if ($request->edit != '') {
             $productid = $request->edit;
         }

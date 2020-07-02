@@ -13,6 +13,8 @@ class ProducerController extends Controller
 
     public function __construct()
     {
+        $this->middleware("concurrent.operations:App\Models\Scata\Producer")->only("update", "producer");
+
         HelpDisk::checkIfExists("producers");
     }
 

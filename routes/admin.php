@@ -235,6 +235,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::get("/create", "HelpDiskController@create")->name("helpDisk.create")->middleware("can:helpDisk.create");
         Route::post("/", "HelpDiskController@store")->name("helpDisk.store")->middleware("can:helpDisk.create");
         Route::get("/{helpDisk}", "HelpDiskController@edit")->name("helpDisk.edit")->middleware("can:helpDisk.edit");
+        Route::get("/{helpDisk}/klonen", "HelpDiskController@clone")->name("helpDisk.clone")->middleware("can:helpDisk.create");
         Route::put("/{helpDisk}/update", "HelpDiskController@update")->name("helpDisk.update")->middleware("can:helpDisk.edit");
         Route::get("/{helpDisk}/delete", "HelpDiskController@destroy")->name("helpDisk.destroy")->middleware("can:helpDisk.delete");
     });

@@ -1,6 +1,6 @@
 @extends('backend.layouts.backend')
 
-@section('title', 'Newsletter')
+@section('title', 'Helpdesk')
 
 @section('css_before')
     <!-- Page JS Plugins CSS -->
@@ -10,12 +10,12 @@
 @section('content')
     <h2 class="content-heading">
         <i class="fa fa-question-circle"></i> Helpdesk
-        {{--        @can('helpDisk.create')--}}
-        <a class="btn btn-alt-primary pull-right" href="{{route('helpDisk.create')}}">
-            +
-            Neuer Helpdesk
-        </a>
-        {{--        @endcan--}}
+        @can('helpDisk.create')
+            <a class="btn btn-alt-primary pull-right" href="{{route('helpDisk.create')}}">
+                +
+                Neuer Helpdesk
+            </a>
+        @endcan
     </h2>
 
     <!-- Dynamic Table Full -->
@@ -28,19 +28,43 @@
                         <th class="text-center">ID</th>
                         <th>Seite für diesen Helpdesk</th>
                         <th>Text</th>
-                        {{--                        @canany(['helpDisk.edit', 'helpDisk.delete'])--}}
-                        <th class="d-none d-sm-table-cell"></th>
-                        {{--                        @endcanany--}}
+                        @canany(['helpDisk.edit', 'helpDisk.delete'])
+                            <th class="d-none d-sm-table-cell"></th>
+                        @endcanany
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($articles as $item)
                         <tr>
-                            <td class="text-center">{{$item->id}}</td>
-                            <td>{{$item->page->displayed_name}}</td>
+                            <td class="text-center">
+                                @can('helpDisk.edit')
+                                    <a
+                                            href="{{route('helpDisk.edit',$item)}}">
+                                        {{$item->id}}
+                                    </a>
+                                @else
+                                    {{$item->id}}
+                                @endcan
+                            </td>
+                            <td>
+                                @can('helpDisk.edit')
+                                    <a
+                                            href="{{route('helpDisk.edit',$item)}}">
+                                        {{$item->page->displayed_name}}
+                                    </a>
+                                @else
+                                    {{$item->page->displayed_name}}
+                                @endcan
+                            </td>
                             <td>{{\Str::limit(strip_tags($item->details))}}</td>
                             @canany(['helpDisk.edit', 'helpDisk.delete'])
                                 <td class="text-right">
+                                    @can("helpDisk.create")
+                                        <a class="edit-link" href="{{route("helpDisk.clone",$item->id)}}">
+                                            <i class="fa fa-copy"></i>
+                                            Klonen
+                                        </a>
+                                    @endcan
                                     @can('helpDisk.edit')
                                         <a class="edit-link"
                                            href="{{route('helpDisk.edit',$item)}}"><i
@@ -48,7 +72,6 @@
                                             Bearbeiten
                                         </a>
                                     @endcan
-
                                     @can('helpDisk.delete')
                                         <a class="edit-link delete-helpDisk" href="javascript:void(0)"
                                            data-delurl="{{route('helpDisk.destroy',$item->id)}}">

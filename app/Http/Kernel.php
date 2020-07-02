@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
         'api' => [
             'throttle:60,1',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            'languageHeader'
+            'languageHeader',
         ],
     ];
 
@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'languageHeader' => \App\Http\Middleware\LanguageHeader::class,
+        'concurrent.operations' => \App\Http\Middleware\StopConcurrentOperations::class,
     ];
 }

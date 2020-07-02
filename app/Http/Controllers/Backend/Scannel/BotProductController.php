@@ -17,8 +17,12 @@ class BotProductController extends Controller
 {
     public function __construct()
     {
-        if (request()->route('category'))
-            HelpDisk::checkIfExists("bot_products_" . request()->route('category'));
+        $this->middleware("concurrent.operations:App\Models\Bot\Bot_Product")->only("save", "product");
+
+        if (request()->route('category')){
+            $category = is_numeric(request()->route('category')) ? Bot_Product::where('id', request()->route('category'))->firstOrFail()->productType : request()->route('category');
+            HelpDisk::checkIfExists("bot_products_" . $category);
+        }
     }
 
     public function products($category = null, Request $request)
