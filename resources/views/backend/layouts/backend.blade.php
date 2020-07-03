@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,400i,600,700">
     <link rel="stylesheet" id="css-main" href="{{ mix('/css/codebase.css') }}">
     <link rel="stylesheet" id="css-main" href="{{ asset('/css/scannel.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.12/css/lightgallery.min.css">
     <style>
         #mySidebar {
             background-color: white;
@@ -61,6 +62,11 @@
 
         .openbtn:hover {
             background-color: #444;
+        }Than
+
+        .sidebar .image-link {
+            padding: unset !important;
+            display: unset !important;
         }
 
         @media (min-width: 992px) {
@@ -73,6 +79,7 @@
             }
         }
     </style>
+
     <!-- You can include a specific file from public/css/themes/ folder to alter the default color theme of the template. eg: -->
 <!-- <link rel="stylesheet" id="css-theme" href="{{ mix('/css/themes/corporate.css') }}"> -->
 @yield('css_after')
@@ -137,7 +144,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="content-side">
+                <div class="content-side help-disk-content">
                     <p>
                         {!! $helpDiskData->details !!}
                     </p>
@@ -887,17 +894,25 @@
         }
 
 
-        @if(session()->has("error"))
-            let div = '    <div class="alert alert-danger alert-dismissable" role="alert">' +
-                '        <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                '            <span aria-hidden="true">×</span>' +
-                '        </button>' +
-                '        <p class="mb-0">{{session("error")}}</p>' +
-                '    </div>'
-            $(".content-heading").after(div)
+                @if(session()->has("error"))
+        let div = '    <div class="alert alert-danger alert-dismissable" role="alert">' +
+            '        <button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+            '            <span aria-hidden="true">×</span>' +
+            '        </button>' +
+            '        <p class="mb-0">{{session("error")}}</p>' +
+            '    </div>'
+        $(".content-heading").after(div)
         @endif
     </script>
     @yield('js_after')
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.12/js/lightgallery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/1.6.12/js/lightgallery-all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".help-disk-content").lightGallery({
+                selector: '.image-link'
+            });
+        });
+    </script>
 </body>
 </html>
